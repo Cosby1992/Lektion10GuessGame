@@ -16,15 +16,17 @@ public class Controller {
     private int randomNumber;
     private int guess;
 
+    private EvaluateHelper evaluateHelper;
+
 
     @FXML
     public void initialize(){
 
         // center info text
-        lb_game_info.setMaxWidth(Double.MAX_VALUE);
-        AnchorPane.setLeftAnchor(lb_game_info, 0.0);
-        AnchorPane.setRightAnchor(lb_game_info, 0.0);
-        lb_game_info.setAlignment(Pos.CENTER);
+//        lb_game_info.setMaxWidth(Double.MAX_VALUE);
+//        AnchorPane.setLeftAnchor(lb_game_info, 0.0);
+//        AnchorPane.setRightAnchor(lb_game_info, 0.0);
+//        lb_game_info.setAlignment(Pos.CENTER);
 
         // initialize game
         initNewGame();
@@ -32,6 +34,8 @@ public class Controller {
 
     // method for initializing game
     public void initNewGame(){
+
+        evaluateHelper = new EvaluateHelper();
 
         randomNumber = (int) (Math.random() * 100) + 1;
 
@@ -45,11 +49,30 @@ public class Controller {
     // evaluates user guess on guess button click
     public void evaluateGuess(ActionEvent actionEvent) {
 
-        String input;
+        try {
+            guess = Integer.valueOf(tf_number_input.getText());
 
-        input = tf_number_input.getText();
+            int resultat = evaluateHelper.evaluate(guess, randomNumber);
 
-        System.out.println(input);
+
+            if (resultat == -3) {
+                lb_game_info.setText("Du gættede for lavt, prøv igen.");
+            } else if (resultat == -2) {
+                lb_game_info.setText("Du gættede for højt, prøv igen.");
+            } else if (resultat == -1) {
+                lb_game_info.setText("Tallet du gættede var ikke imellem 1 og 100, prøv igen.");
+            } else {
+                lb_game_info.setText("Tilykke du gættede det magiske tal, som var " + randomNumber);
+
+            }
+        } catch (NumberFormatException e){
+
+            lb_game_info.setText("Du skrev ikke et tal, prøv igen");
+
+        }
+
 
     }
+
+
 }
